@@ -9,9 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  image: ^3.2.2
   image_picker: ^0.8.6
   cream_of_the_crop:
     path: ../
+
+
 
 dev_dependencies:
   flutter_test:

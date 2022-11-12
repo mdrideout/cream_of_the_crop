@@ -1,8 +1,9 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:cream_of_the_crop/cream_of_the_crop.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image/image.dart' as image_tool;
 import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -23,25 +24,95 @@ class _MyAppState extends State<MyApp> {
 
   // Image related
   final ImagePicker imagePicker = ImagePicker();
-  final double imageDisplayWidth = 300;
+  final double imageDisplayWidth = 600;
   XFile? pickedImage;
   Uint8List? imageBytes;
   ui.Image? decodedImage;
 
   // Converted image vars
-  final double resizeMaxDimension = 300;
+  final double resizeMaxDimension = 600;
+  final double resizeQuality = 0.80;
+
   DateTime? creamResizeStart;
   DateTime? creamResizeEnd;
-  bool creamResizeLoading = false;
   Uint8List? creamImageBytes;
   ui.Image? creamDecodedImage;
+  bool creamProcessing = false;
+
+  DateTime? dartResizeStart;
+  DateTime? dartResizeEnd;
+  Uint8List? dartImageBytes;
+  ui.Image? dartDecodedImage;
+  bool dartProcessing = false;
+
+  /// Cream Of The Crop Resize Function
+  void creamResize() async {
+    setState(() {
+      creamResizeStart = DateTime.now();
+      creamProcessing = true;
+    });
+
+    Uint8List? resizeBytes = await _creamOfTheCropPlugin.scaleImage(
+      imageBytes!,
+      resizeMaxDimension,
+      double.infinity,
+    );
+
+    if (resizeBytes == null) {
+      debugPrint("Image failed to resize. Null data received from cream_of_the_crop.");
+      return;
+    }
+
+    // Decode as image
+    ui.Image decoded = await decodeImageFromList(resizeBytes);
+
+    setState(() {
+      creamImageBytes = resizeBytes;
+      creamDecodedImage = decoded;
+      creamResizeEnd = DateTime.now();
+      creamProcessing = false;
+    });
+  }
+
+  /// Dart Image Resize Function
+  void dartResize() async {
+    setState(() {
+      dartResizeStart = DateTime.now();
+      dartProcessing = true;
+    });
+
+    // Decode the image to the dart_image format
+    image_tool.Image? dartImage = image_tool.decodeImage(imageBytes!);
+
+    if (dartImage == null) {
+      debugPrint("dart_image failed to decode the picked image.");
+      return;
+    }
+
+    // Resize the image
+    image_tool.Image resizedImage = image_tool.copyResize(dartImage, width: resizeMaxDimension.toInt());
+
+    // Encode it back as a jpg
+    Uint8List resizedBytes =
+        Uint8List.fromList(image_tool.encodeJpg(resizedImage, quality: (resizeQuality * 100).toInt()));
+
+    // Decode for dart:ui so we can access the dimensions
+    ui.Image decoded = await decodeImageFromList(resizedBytes);
+
+    setState(() {
+      dartImageBytes = resizedBytes;
+      dartDecodedImage = decoded;
+      dartResizeEnd = DateTime.now();
+      dartProcessing = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Cream Of The Crop Example'),
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -76,46 +147,66 @@ class _MyAppState extends State<MyApp> {
                 if (imageBytes != null && decodedImage != null) ...[
                   const SizedBox(height: 20),
                   SizedBox(width: imageDisplayWidth, child: Image.memory(imageBytes!)),
-                  Text("Size: ${(imageBytes!.lengthInBytes * 0.000001).toStringAsFixed(2)} MB"),
+                  const SizedBox(height: 10),
+                  Text("Size: ${(imageBytes!.lengthInBytes * 0.000001).toStringAsFixed(3)} MB"),
                   Text("Width: ${decodedImage!.width}px, Height: ${decodedImage!.height}px"),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        creamResizeLoading = true;
-                        creamResizeStart = DateTime.now();
-                      });
-
-                      await Future.delayed(const Duration(microseconds: 3000));
-
-                      Uint8List? resizeBytes =
-                          await _creamOfTheCropPlugin.scaleImage(imageBytes!, resizeMaxDimension, double.infinity);
-
-                      if (resizeBytes == null) {
-                        debugPrint("Image failed to resize. Null data received from cream_of_the_crop.");
-                        return;
-                      }
-
-                      // Decode as image
-                      ui.Image decoded = await decodeImageFromList(resizeBytes);
-
-                      setState(() {
-                        creamImageBytes = resizeBytes;
-                        creamDecodedImage = decoded;
-                        creamResizeLoading = false;
-                        creamResizeEnd = DateTime.now();
-                      });
-                    },
-                    child: const Text("Resize Image: Cream Of The Crop"),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              creamResize();
+                            },
+                            child: const Text("Resize Image: Cream Of The Crop"),
+                          ),
+                          const SizedBox(height: 20),
+                          if (creamProcessing) ...const [
+                            Text("Processing image with cream..."),
+                            CircularProgressIndicator(),
+                          ],
+                          if (creamImageBytes != null && creamDecodedImage != null) ...[
+                            SizedBox(width: imageDisplayWidth, child: Image.memory(creamImageBytes!)),
+                            const SizedBox(height: 10),
+                            Text(
+                                "Size: ${(creamImageBytes!.lengthInBytes * 0.000001).toStringAsFixed(3)} MB at $resizeQuality quality"),
+                            Text("Width: ${creamDecodedImage!.width}px, Height: ${creamDecodedImage!.height}px"),
+                            Text(
+                                "Processing Time: ${(creamResizeEnd!.difference(creamResizeStart!).inMilliseconds / 1000).toStringAsFixed(3)} seconds")
+                          ],
+                        ],
+                      ),
+                      const SizedBox(width: 20),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              dartResize();
+                            },
+                            child: const Text("Resize Image: Dart Image"),
+                          ),
+                          const SizedBox(height: 20),
+                          if (dartProcessing) ...const [
+                            Text("Processing image with dart..."),
+                            CircularProgressIndicator(),
+                          ],
+                          if (dartImageBytes != null && dartDecodedImage != null) ...[
+                            SizedBox(width: imageDisplayWidth, child: Image.memory(dartImageBytes!)),
+                            const SizedBox(height: 10),
+                            Text(
+                                "Size: ${(dartImageBytes!.lengthInBytes * 0.000001).toStringAsFixed(3)} MB at $resizeQuality quality"),
+                            Text("Width: ${dartDecodedImage!.width}px, Height: ${dartDecodedImage!.height}px"),
+                            Text(
+                                "Processing Time: ${(dartResizeEnd!.difference(dartResizeStart!).inMilliseconds / 1000).toStringAsFixed(3)} seconds")
+                          ],
+                        ],
+                      )
+                    ],
                   ),
-                ],
-                const SizedBox(height: 20),
-                if (creamResizeLoading) const CircularProgressIndicator(),
-                if (creamImageBytes != null && creamDecodedImage != null) ...[
-                  SizedBox(width: imageDisplayWidth, child: Image.memory(creamImageBytes!)),
-                  Text("Size: ${(creamImageBytes!.lengthInBytes * 0.000001).toStringAsFixed(2)} MB"),
-                  Text("Width: ${creamDecodedImage!.width}px, Height: ${creamDecodedImage!.height}px"),
-                  Text("Processing Time: ${creamResizeEnd!.difference(creamResizeStart!).inSeconds}")
                 ],
                 const SizedBox(height: 40),
               ],
