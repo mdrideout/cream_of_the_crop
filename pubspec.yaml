@@ -1,7 +1,7 @@
 name: cream_of_the_crop
 description: Blazingly fast image transformations for Flutter Web.
-version: 0.0.1
-homepage:
+version: 0.91.0
+homepage: https://rideout.studio
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
