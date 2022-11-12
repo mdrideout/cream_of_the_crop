@@ -34,7 +34,7 @@ handle these tasks even faster. Consider checking out [flutter_native_image](htt
 # Installation:
 Add more readme for setup and use
 
-# Crop Example:
+# Crop Instructions:
 The crop command takes several variables. Please reference the [mozilla developer docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)
 for a description of that they mean.
 
@@ -52,9 +52,9 @@ Uint8List? crop() async {
     imageBytes,
     sx, sy,  // Crop position relative to the top left of the original image
     sw, sh,  // Width and height of the area to remain
-    dx, dy,  // Relative position on the destination canvas (likely 0,0 for top left)
+    dx, dy,  // Relative position on the destination canvas (almost always 0,0 since creating a canvas larger than the desired image is not supported right now)
     dw, dh,  // Final width and height of the finished image
-    quality,
+    quality, 
     imageExportType,
   );
 }
