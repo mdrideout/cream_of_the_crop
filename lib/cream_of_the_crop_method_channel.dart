@@ -29,4 +29,22 @@ class MethodChannelCreamOfTheCrop extends CreamOfTheCropPlatform {
       imageExportType,
     );
   }
+
+  @override
+  Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
+      double quality, ImageExportType imageExportType) async {
+    return await CreamOfTheCropPlatform.instance.cropImage(
+      imageBytes,
+      sx,
+      sy,
+      sw,
+      sh,
+      dx,
+      dy,
+      dw,
+      dh,
+      quality,
+      imageExportType,
+    );
+  }
 }

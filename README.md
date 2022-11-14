@@ -83,24 +83,30 @@ void getImage() async {
 Given an original image of 6000 x 4000 dimensions, cropping to a 500 x 500 square.
 ```dart
 // dart:ui decoded original image dimensions
-int decodedWidth = 6000;
-int decodedHeight = 4000;
+int decodedWidth = 3411;
+int decodedHeight = 5117;
 
 // Desired final pixel size of the image
 int exportWidth = 500;
 int exportHeight = 500;
 
 // Values provided by crop_image package cropping UI
-double cropTop = 410;
-double cropRight = 1732;
-double cropBottom = 1252;
-double cropLeft = 890;
+double cropTop = 235;
+double cropRight = 3281;
+double cropBottom = 3285;
+double cropLeft = 230;
+
+// Distances From Edges
+int distTop = cropTop.toInt();
+int distRight = (decodedWidth - cropRight).toInt();
+int distLeft = cropLeft.toInt();
+int distBottom = (decodedHeight - cropBottom).toInt();
 
 // Calculated crop values needed to create the cropped image data
-int sx = cropLeft;
-int sy = cropTop;
-int sw = decodedWidth - cropLeft - cropRight;
-int sh = decodedHeight - cropTop - cropBottom;
+int sx = distLeft;
+int sy = distTop;
+int sw = decodedWidth - distLeft - distRight;
+int sh = decodedHeight - distTop - distBottom;
 int dx = 0;
 int dy = 0;
 int dw = exportWidth;

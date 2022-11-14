@@ -35,8 +35,8 @@ abstract class CreamOfTheCropPlatform extends PlatformInterface {
     throw UnimplementedError('scaleImage() has not been implemented.');
   }
 
-  Future<Uint8List?> cropImage(Uint8List imageBytes, double sx, double sy, double sw, double sh, double dx, double dy,
-      double dw, double dh, double quality, ImageExportType imageExportType) {
+  Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
+      double quality, ImageExportType imageExportType) {
     throw UnimplementedError('scaleImage() has not been implemented.');
   }
 }

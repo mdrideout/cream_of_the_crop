@@ -20,4 +20,31 @@ class CreamOfTheCrop {
       imageExportType,
     );
   }
+
+  /// Crop Image
+  /// Crops an image based on the values provided.
+  ///
+  /// [sx], [sy] = Crop position relative to the top left of the original image
+  ///
+  /// [sw], [sh] = Width and height of the area to remain
+  ///
+  /// [dx], [dy] = Relative position on the destination canvas (almost always 0,0 since creating a canvas larger than the desired image is not supported right now)
+  ///
+  /// [dw], [dh] = Final width and height of the finished image
+  Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
+      {double quality = 0.8, ImageExportType imageExportType = ImageExportType.jpeg}) async {
+    return await CreamOfTheCropPlatform.instance.cropImage(
+      imageBytes,
+      sx,
+      sy,
+      sw,
+      sh,
+      dx,
+      dy,
+      dw,
+      dh,
+      quality,
+      imageExportType,
+    );
+  }
 }

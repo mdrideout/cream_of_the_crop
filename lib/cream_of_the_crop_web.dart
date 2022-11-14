@@ -79,7 +79,60 @@ class CreamOfTheCropWeb extends CreamOfTheCropPlatform {
     UriData? uriData = Uri.parse(exportDataUrl).data;
 
     if (uriData == null) {
-      throw ("Canvas export uriData was null.");
+      throw ("scaleImage() Canvas export uriData was null.");
+    }
+
+    // Convert back to bytes
+    Uint8List exportData = uriData.contentAsBytes();
+
+    // Return
+    return exportData;
+  }
+
+  @override
+  Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
+      double quality, ImageExportType imageExportType) async {
+    if (quality > 1 || quality < 0) {
+      throw ("Quality must be between 0 and 1 (inclusive) and not null");
+    }
+
+    // Convert to base64 string
+    String base64Image = base64Encode(imageBytes);
+
+    // Get the base64 URI media type
+    String mediaType = getDataUriImageMediaType(base64Image);
+
+    // Create an HTML image element to hold our image
+    var image = html.ImageElement();
+    image.src = 'data:$mediaType;base64,$base64Image';
+
+    // Wait for the image to load / render
+    await image.onLoad.first;
+
+    // Create a Canvas we can use to draw and transform the image
+    var canvas = html.CanvasElement(width: dw, height: dh);
+
+    // Get 2d context of the canvas
+    var ctx = canvas.context2D;
+
+    // Source Rectangle
+    html.Rectangle sourceRect = html.Rectangle(sx, sy, sw, sh);
+
+    // Destination Rectangle
+    html.Rectangle destRect = html.Rectangle(dx, dy, dw, dh);
+
+    // Draw the scaled image
+    ctx.drawImageToRect(image, destRect, sourceRect: sourceRect);
+    // ctx.drawImageScaledFromSource(image, sx, sy, sw, sh, dx, dy, dw, dh);
+
+    // Convert to a base64 data URL
+    String exportDataUrl = canvas.toDataUrl(imageExportType.mediaType, quality);
+
+    // Convert back to bytes
+    UriData? uriData = Uri.parse(exportDataUrl).data;
+
+    if (uriData == null) {
+      throw ("cropImage() Canvas export uriData was null.");
     }
 
     // Convert back to bytes
