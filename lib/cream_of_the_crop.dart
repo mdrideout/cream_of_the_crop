@@ -32,7 +32,9 @@ class CreamOfTheCrop {
   ///
   /// [dw], [dh] = Final width and height of the finished image
   Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
-      {double quality = 0.8, ImageExportType imageExportType = ImageExportType.jpeg}) async {
+      {double quality = 0.8,
+      ImageExportType imageExportType = ImageExportType.jpeg,
+      bool allowUnequalAspectRatio = false}) async {
     return await CreamOfTheCropPlatform.instance.cropImage(
       imageBytes,
       sx,
@@ -45,6 +47,7 @@ class CreamOfTheCrop {
       dh,
       quality,
       imageExportType,
+      allowUnequalAspectRatio,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cream_of_the_crop/enums/image_export_type_enum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'cream_of_the_crop_platform_interface.dart';
@@ -91,9 +92,17 @@ class CreamOfTheCropWeb extends CreamOfTheCropPlatform {
 
   @override
   Future<Uint8List?> cropImage(Uint8List imageBytes, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh,
-      double quality, ImageExportType imageExportType) async {
+      double quality, ImageExportType imageExportType, bool allowUnequalAspectRatio) async {
+    // Validate quality
     if (quality > 1 || quality < 0) {
       throw ("Quality must be between 0 and 1 (inclusive) and not null");
+    }
+
+    // Validate export width and height match aspect ratio of cropped pixels
+    String croppedAspectRatio = (sw / sh).toStringAsFixed(2);
+    String exportAspectRatio = (dw / dh).toStringAsFixed(2);
+    if ((croppedAspectRatio != exportAspectRatio) && allowUnequalAspectRatio == false) {
+      throw ("Crop and export aspect ratios must match (rounded to two decimal places). Ex: 4:6 = 0.67; 1:1 = 1. Provider cropped aspect ratio: $croppedAspectRatio, provided export aspect ratio: $exportAspectRatio. Use `allowUnequalAspectRatio: true` to force and stretch the exported image.");
     }
 
     // Convert to base64 string
