@@ -31,9 +31,6 @@ The [image](https://pub.dev/packages/image) package is more performant on iOS an
 provide a good user experience for those platforms. There is potential to add native Swift and Kotlin code to
 handle these tasks even faster. Consider checking out [flutter_native_image](https://pub.dev/packages/flutter_native_image).
 
-# Installation:
-Add more readme for setup and use
-
 # Crop Instructions:
 The crop command takes several variables. Please reference the [mozilla developer docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)
 for a description of that they mean.
