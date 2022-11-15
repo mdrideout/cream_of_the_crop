@@ -61,8 +61,12 @@ Uint8List? crop() async {
 ```
 
 To calculate these values, it may be useful to use the `dart:ui` package's `Image()` object to obtain the original image's width and height.
+Example shown with an imagePicker.
 ```dart
+import 'package:image_picker/image_picker.dart';
 import 'dart:ui' as ui;
+
+final ImagePicker imagePicker = ImagePicker();
 
 void getImage() async {
   // Image Picker
@@ -80,11 +84,15 @@ void getImage() async {
 }
 ```
 
-Given an original image of 6000 x 4000 dimensions, cropping to a 500 x 500 square.
+### crop_image example
+See the flutter project in the example folder for an implementation of a cropping overlay dialog returning
+crop values to be used by **cream_of_the_crop**.
+
+Given an original image of X x Y dimensions, cropping to a 500 x 500 square.
 ```dart
 // dart:ui decoded original image dimensions
-int decodedWidth = 3411;
-int decodedHeight = 5117;
+int decodedWidth = decoded.width; // X
+int decodedHeight = decoded.height; // Y
 
 // Desired final pixel size of the image
 int exportWidth = 500;
@@ -115,8 +123,8 @@ int dh = exportHeight;
 
 
 # Room for Improvement
-Very large images (over 15MB) can take 2-3 seconds to process. The image processing blocks the main UI thread so a progress indicator won't animate.
+Very large images (over 15MB) can still take 2-3 seconds to process. The image processing blocks the main UI thread so a progress indicator won't animate.
 This could potentially be fixed by moving the processing code over to external javascript and setting up a web worker, however, the installation
-process would be much more complex for the package user. 
+process would be more complex for the package user.
 
 A typical 10MP smart phone photo of ~5MB can be processed in under 1 second on an average computer, so in most cases the experience should be good enough as is.
