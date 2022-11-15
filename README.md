@@ -99,10 +99,10 @@ int exportWidth = 500;
 int exportHeight = 500;
 
 // Values provided by crop_image package cropping UI
-double cropTop = 235;
-double cropRight = 3281;
-double cropBottom = 3285;
-double cropLeft = 230;
+double cropTop = finalCropPixels.top;
+double cropRight = finalCropPixels.right;
+double cropBottom = finalCropPixels.bottom;
+double cropLeft = finalCropPixels.left;
 
 // Distances From Edges
 int distTop = cropTop.toInt();
