@@ -9,7 +9,7 @@ Blazingly fast image crop and resize processing for Flutter Web.
 This package exists to offer a high performance option for image resize and crop transformations _on web_. 
 Due to the nature of dart, an [image](https://pub.dev/packages/image) transformer writen in pure dart is slow on web. See the performance warning on that package for details.
 
-<img src="./assets/benchmark-dart-vs-canvas.png" alt="Dart Image vs Cream Of The Crop Benchmark. 1.591 vs 38.634" width="400" />
+<img src="https://raw.githubusercontent.com/mdrideout/cream_of_the_crop/main/assets/benchmark-dart-vs-canvas.png" alt="Dart Image vs Cream Of The Crop Benchmark. 1.591 vs 38.634" width="400" />
 
 ### How?
 
@@ -35,7 +35,7 @@ handle these tasks even faster. Consider checking out [flutter_native_image](htt
 The crop command takes several variables. Please reference the [mozilla developer docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)
 for a description of that they mean.
 
-<img src="./assets/canvas_drawImage_vars.jpeg" alt="Dart Image vs Cream Of The Crop Benchmark. 1.591 vs 38.634" width="400" />
+<img src="https://raw.githubusercontent.com/mdrideout/cream_of_the_crop/main/assets/canvas_drawImage_vars.jpeg" alt="Dart Image vs Cream Of The Crop Benchmark. 1.591 vs 38.634" width="400" />
 
 Image source: [Mozilla mdn docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage)
 
