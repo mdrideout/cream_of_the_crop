@@ -16,7 +16,7 @@ Due to the nature of dart, an [image](https://pub.dev/packages/image) transforme
 In almost all modern web browsers, **cream_of_the_crop** can leverage the GPU Accelerated HTML &lt;canvas&gt; element to perform resize and crop operations.
 
 ### Demo
-Launch the app in the example folder to see the performance difference between canvas and pure dart.
+Launch the app in the [example folder](https://github.com/mdrideout/cream_of_the_crop/tree/main/example) to see the performance difference between canvas and pure dart.
 
 ### No User Interface
 This package has no user interface. It is designed to be used with [crop_image](https://pub.dev/packages/crop_image)
@@ -82,7 +82,7 @@ void getImage() async {
 ```
 
 ### crop_image example
-See the flutter project in the example folder for an implementation of a cropping overlay dialog returning
+See the flutter project in the [example folder](https://github.com/mdrideout/cream_of_the_crop/tree/main/example) for an implementation of a cropping overlay dialog returning
 crop values to be used by **cream_of_the_crop**.
 
 Given an original image of X x Y dimensions, cropping to a 500 x 500 square.
