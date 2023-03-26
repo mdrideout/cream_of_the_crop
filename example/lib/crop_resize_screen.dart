@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:cream_of_the_crop/cream_of_the_crop.dart';
+import 'package:cream_of_the_crop/models/image_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image_tool;
 import 'package:image_picker/image_picker.dart';
@@ -48,6 +49,11 @@ class _CropResizeScreenState extends State<CropResizeScreen> {
   Uint8List? dartImageBytes;
   ui.Image? dartDecodedImage;
   bool dartProcessing = false;
+
+  void printDimensions() async {
+    ImageDimensions imageDimensions = await _creamOfTheCropPlugin.getImageDimensions(imageBytes!);
+    print("Image Dimensions - Height: ${imageDimensions.height}; Width: ${imageDimensions.width}");
+  }
 
   /// Cream Of The Crop Resize Function
   void creamResize() async {
@@ -221,6 +227,13 @@ class _CropResizeScreenState extends State<CropResizeScreen> {
                 const SizedBox(height: 10),
                 Text("Size: ${(imageBytes!.lengthInBytes * 0.000001).toStringAsFixed(3)} MB"),
                 Text("Width: ${decodedImage!.width}px, Height: ${decodedImage!.height}px"),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    printDimensions();
+                  },
+                  child: const Text("Get Image Dimensions Via Cream Of Crop Web"),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisSize: MainAxisSize.max,

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'cream_of_the_crop_platform_interface.dart';
 import 'enums/image_export_type_enum.dart';
+import 'models/image_dimensions.dart';
 
 class CreamOfTheCrop {
   Future<String?> getPlatformVersion() {
@@ -49,5 +50,11 @@ class CreamOfTheCrop {
       imageExportType,
       allowUnequalAspectRatio,
     );
+  }
+
+  /// Get Image Dimensions
+  /// Returns the width and height of the image
+  Future<ImageDimensions> getImageDimensions(Uint8List imageBytes) async {
+    return await CreamOfTheCropPlatform.instance.getImageDimensions(imageBytes);
   }
 }

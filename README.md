@@ -4,6 +4,7 @@ Blazingly fast image crop and resize processing for Flutter Web.
 **Features:**
 - Crop
 - Resize
+- Get Image Dimensions
 
 ### Why?
 This package exists to offer a high performance option for image resize and crop transformations _on web_. 

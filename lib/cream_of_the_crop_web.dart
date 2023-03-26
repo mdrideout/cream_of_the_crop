@@ -4,6 +4,7 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:html';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -12,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'cream_of_the_crop_platform_interface.dart';
+import 'models/image_dimensions.dart';
 import 'util/util.dart';
 
 /// A web implementation of the CreamOfTheCropPlatform of the CreamOfTheCrop plugin.
@@ -149,5 +151,31 @@ class CreamOfTheCropWeb extends CreamOfTheCropPlatform {
 
     // Return
     return exportData;
+  }
+
+  @override
+  Future<ImageDimensions> getImageDimensions(Uint8List imageBytes) async {
+    final blob = Blob([imageBytes]);
+    final imageUrl = Url.createObjectUrlFromBlob(blob);
+
+    final image = ImageElement();
+    image.src = imageUrl;
+
+    try {
+      // Wait for the image to load / render
+      await image.onLoad.first;
+
+      int? width = image.width;
+      int? height = image.height;
+
+      if (width == null || height == null) {
+        throw ("Width or height is null. Width: $width; Height: $height");
+      }
+
+      // Create the image dimensions object and return it
+      return ImageDimensions(width, height);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
